@@ -124,6 +124,14 @@
             return;
         }
 
+        // Get Turnstile token
+        const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
+        if (!turnstileToken) {
+            showNotification('Please complete the verification check.', 'error');
+            return;
+        }
+        data.turnstileToken = turnstileToken;
+
         const submitBtn = contactForm.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
 
@@ -144,6 +152,10 @@
             if (result.success) {
                 showNotification('Thank you! Your message has been sent. We\'ll be in touch soon.', 'success');
                 contactForm.reset();
+                // Reset Turnstile widget
+                if (window.turnstile) {
+                    turnstile.reset();
+                }
             } else {
                 showNotification('Sorry, there was a problem sending your message. Please try again.', 'error');
             }
@@ -153,6 +165,10 @@
         } finally {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
+            // Reset Turnstile on any completion
+            if (window.turnstile) {
+                turnstile.reset();
+            }
         }
     }
 

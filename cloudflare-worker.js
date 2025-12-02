@@ -1,5 +1,5 @@
 // Cloudflare Worker for United Civil Group Contact Form
-// Sends emails via SMTP2GO API
+// Sends emails via SMTP2GO API with Turnstile verification
 
 export default {
   async fetch(request, env) {
@@ -23,11 +23,48 @@ export default {
       const formData = await request.json();
 
       // Validate required fields
-      const { name, email, phone, service, message } = formData;
+      const { name, email, phone, service, message, turnstileToken } = formData;
       if (!name || !email || !message) {
         return new Response(JSON.stringify({ error: "Missing required fields" }), {
           status: 400,
           headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      // Verify Turnstile token
+      if (!turnstileToken) {
+        return new Response(JSON.stringify({ error: "Missing verification token" }), {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "https://unitedcivil.com.au",
+          },
+        });
+      }
+
+      const turnstileResponse = await fetch(
+        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            secret: env.TURNSTILE_SECRET_KEY,
+            response: turnstileToken,
+            remoteip: request.headers.get("CF-Connecting-IP"),
+          }),
+        }
+      );
+
+      const turnstileResult = await turnstileResponse.json();
+
+      if (!turnstileResult.success) {
+        console.error("Turnstile verification failed:", turnstileResult);
+        return new Response(JSON.stringify({ error: "Verification failed" }), {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "https://unitedcivil.com.au",
+          },
         });
       }
 

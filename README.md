@@ -71,13 +71,27 @@ The contact form submits to a Cloudflare Worker that sends emails via SMTP2GO.
 | Variable | Type | Description |
 |----------|------|-------------|
 | `SMTP2GO_API_KEY` | Secret | SMTP2GO API key (send permission only) |
+| `TURNSTILE_SECRET_KEY` | Secret | Cloudflare Turnstile secret key |
 
 **Setup Steps:**
 
 1. Create Worker in Cloudflare dashboard (Workers & Pages → Create)
 2. Paste contents of `cloudflare-worker.js`
-3. Add `SMTP2GO_API_KEY` secret in Settings → Variables
+3. Add secrets in Settings → Variables:
+   - `SMTP2GO_API_KEY` - your SMTP2GO API key
+   - `TURNSTILE_SECRET_KEY` - your Turnstile secret key
 4. Add custom domain `contact.unitedcivil.com.au` in Settings → Domains
+
+### Cloudflare Turnstile (Bot Protection)
+
+Turnstile provides invisible bot protection on the contact form.
+
+**Dashboard:** Cloudflare → Turnstile → United Civil Group
+
+| Key | Location |
+|-----|----------|
+| Site Key | `index.html` (in the Turnstile div) |
+| Secret Key | Cloudflare Worker secret `TURNSTILE_SECRET_KEY` |
 
 ### SMTP2GO
 
