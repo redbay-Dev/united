@@ -103,9 +103,9 @@
 
     /**
      * Contact Form Handling
-     * Basic form validation and submission handling
+     * Sends form data to Cloudflare Worker which emails via SMTP2GO
      */
-    function handleFormSubmit(e) {
+    async function handleFormSubmit(e) {
         e.preventDefault();
 
         const formData = new FormData(contactForm);
@@ -124,20 +124,36 @@
             return;
         }
 
-        // Simulate form submission
         const submitBtn = contactForm.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
 
         submitBtn.innerHTML = '<span>Sending...</span>';
         submitBtn.disabled = true;
 
-        // Simulate API call
-        setTimeout(() => {
-            showNotification('Thank you! Your message has been sent. We\'ll be in touch soon.', 'success');
-            contactForm.reset();
+        try {
+            const response = await fetch('https://contact.unitedcivil.com.au/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification('Thank you! Your message has been sent. We\'ll be in touch soon.', 'success');
+                contactForm.reset();
+            } else {
+                showNotification('Sorry, there was a problem sending your message. Please try again.', 'error');
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            showNotification('Sorry, there was a problem sending your message. Please try again.', 'error');
+        } finally {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-        }, 1500);
+        }
     }
 
     /**
