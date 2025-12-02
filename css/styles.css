@@ -6,16 +6,20 @@
 /* CSS Custom Properties (Variables)
    ========================================================================== */
 :root {
-    /* Primary Colors - Professional Blue Palette */
-    --color-primary: #1e40af;
-    --color-primary-light: #3b82f6;
-    --color-primary-dark: #1e3a8a;
-    --color-primary-50: #eff6ff;
-    --color-primary-100: #dbeafe;
+    /* Primary Colors - United Civil Group Brand */
+    --color-primary: #C36801;
+    --color-primary-light: #d97b1a;
+    --color-primary-dark: #a35700;
+    --color-primary-50: #fef6ee;
+    --color-primary-100: #fdecd9;
+
+    /* Secondary & Contrast Colors */
+    --color-secondary: #606060;
+    --color-contrast: #454545;
 
     /* Accent Colors */
-    --color-accent: #0ea5e9;
-    --color-accent-light: #38bdf8;
+    --color-accent: #d97b1a;
+    --color-accent-light: #e89333;
 
     /* Neutral Colors */
     --color-white: #ffffff;
@@ -223,12 +227,12 @@ ul {
 .btn-primary {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
     color: var(--color-white);
-    box-shadow: 0 4px 14px 0 rgba(30, 64, 175, 0.3);
+    box-shadow: 0 4px 14px 0 rgba(195, 104, 1, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px 0 rgba(30, 64, 175, 0.4);
+    box-shadow: 0 6px 20px 0 rgba(195, 104, 1, 0.4);
     color: var(--color-white);
 }
 
