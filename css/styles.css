@@ -7,19 +7,19 @@
    ========================================================================== */
 :root {
     /* Primary Colors - United Civil Group Brand */
-    --color-primary: #C36801;
-    --color-primary-light: #d97b1a;
-    --color-primary-dark: #a35700;
-    --color-primary-50: #fef6ee;
-    --color-primary-100: #fdecd9;
+    --color-primary: #FF8800;
+    --color-primary-light: #ffa033;
+    --color-primary-dark: #e67a00;
+    --color-primary-50: #fff8f0;
+    --color-primary-100: #ffedd9;
 
     /* Secondary & Contrast Colors */
     --color-secondary: #606060;
     --color-contrast: #454545;
 
     /* Accent Colors */
-    --color-accent: #d97b1a;
-    --color-accent-light: #e89333;
+    --color-accent: #ffa033;
+    --color-accent-light: #ffb54d;
 
     /* Neutral Colors */
     --color-white: #ffffff;
@@ -227,12 +227,12 @@ ul {
 .btn-primary {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
     color: var(--color-white);
-    box-shadow: 0 4px 14px 0 rgba(195, 104, 1, 0.3);
+    box-shadow: 0 4px 14px 0 rgba(255, 136, 0, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px 0 rgba(195, 104, 1, 0.4);
+    box-shadow: 0 6px 20px 0 rgba(255, 136, 0, 0.4);
     color: var(--color-white);
 }
 
@@ -270,24 +270,24 @@ ul {
     left: 0;
     right: 0;
     z-index: 1000;
-    padding: var(--spacing-4) 0;
+    padding: var(--spacing-2) 0;
     transition: all var(--transition-base);
-}
-
-.navbar.scrolled {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     box-shadow: var(--shadow-md);
-    padding: var(--spacing-3) 0;
+}
+
+.navbar.scrolled {
+    padding: var(--spacing-2) 0;
 }
 
 .nav-container {
     max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 var(--container-padding);
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    justify-content: space-between;
 }
 
 .nav-logo {
@@ -296,21 +296,24 @@ ul {
     gap: var(--spacing-2);
 }
 
-.logo-text {
-    font-size: var(--font-size-xl);
-    font-weight: 800;
-    color: var(--color-gray-900);
-    transition: color var(--transition-fast);
-}
-
-.navbar:not(.scrolled) .logo-text {
-    color: var(--color-white);
+.nav-logo-img {
+    height: 36px;
+    width: auto;
 }
 
 .nav-menu {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--spacing-1);
+}
+
+.nav-cta-mobile {
+    display: none;
+}
+
+.nav-cta-desktop {
+    display: inline-flex;
 }
 
 .nav-link {
@@ -322,24 +325,14 @@ ul {
     transition: all var(--transition-fast);
 }
 
-.navbar:not(.scrolled) .nav-link {
-    color: rgba(255, 255, 255, 0.9);
-}
-
 .nav-link:hover {
     color: var(--color-primary);
     background: var(--color-primary-50);
 }
 
-.navbar:not(.scrolled) .nav-link:hover {
-    color: var(--color-white);
-    background: rgba(255, 255, 255, 0.1);
-}
-
 .nav-link.nav-cta {
     background: var(--color-primary);
     color: var(--color-white);
-    margin-left: var(--spacing-4);
 }
 
 .nav-link.nav-cta:hover {
@@ -355,7 +348,8 @@ ul {
     background: transparent;
     border: none;
     cursor: pointer;
-    position: relative;
+    position: absolute;
+    right: var(--container-padding);
     z-index: 1001;
 }
 
@@ -366,10 +360,6 @@ ul {
     background: var(--color-gray-900);
     position: relative;
     transition: all var(--transition-fast);
-}
-
-.navbar:not(.scrolled) .hamburger {
-    background: var(--color-white);
 }
 
 .hamburger::before,
@@ -429,9 +419,9 @@ ul {
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg,
-        var(--color-primary-dark) 0%,
-        var(--color-primary) 50%,
-        var(--color-accent) 100%);
+        var(--color-contrast) 0%,
+        var(--color-secondary) 50%,
+        #707070 100%);
 }
 
 .hero-pattern {
@@ -485,11 +475,12 @@ ul {
     color: var(--color-white);
 }
 
-.hero-title .text-gradient {
-    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+.hero-logo {
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+    margin: var(--spacing-4) auto 0;
+    display: block;
 }
 
 .hero-subtitle {
@@ -1151,8 +1142,8 @@ a.contact-value:hover {
 /* Footer
    ========================================================================== */
 .footer {
-    background: var(--color-gray-900);
-    color: var(--color-gray-400);
+    background: linear-gradient(135deg, var(--color-contrast) 0%, var(--color-secondary) 100%);
+    color: var(--color-gray-300);
     padding: var(--spacing-16) 0 var(--spacing-8);
 }
 
@@ -1161,7 +1152,7 @@ a.contact-value:hover {
     grid-template-columns: 1.5fr 2fr;
     gap: var(--spacing-16);
     padding-bottom: var(--spacing-12);
-    border-bottom: 1px solid var(--color-gray-800);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .footer-logo {
@@ -1169,9 +1160,10 @@ a.contact-value:hover {
     margin-bottom: var(--spacing-4);
 }
 
-.footer-logo .logo-text {
-    color: var(--color-white);
-    font-size: var(--font-size-xl);
+.footer-logo-img {
+    height: 50px;
+    width: auto;
+    filter: brightness(0) invert(1);
 }
 
 .footer-tagline {
@@ -1305,10 +1297,25 @@ a.contact-value:hover {
         padding: var(--spacing-16) 0;
     }
 
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
     .nav-toggle {
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        right: auto;
+    }
+
+    .nav-cta-desktop {
+        display: none;
+    }
+
+    .nav-cta-mobile {
+        display: list-item;
     }
 
     .nav-menu {
