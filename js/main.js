@@ -408,6 +408,11 @@
         animateCounters();
         initParallax();
 
+        // Initialize Lucide icons
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+
         // Initial calls
         handleNavScroll();
         highlightActiveNav();
