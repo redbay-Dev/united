@@ -1,0 +1,11 @@
+# robots.txt for United Civil Group
+# https://unitedcivil.com.au
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://unitedcivil.com.au/sitemap.xml
+
+# Disallow crawling of assets that don't need indexing
+Disallow: /cloudflare-worker.js

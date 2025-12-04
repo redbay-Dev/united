@@ -1,23 +1,315 @@
 /**
- * United Civil Group - Main JavaScript
- * Handles navigation, animations, and interactivity
+ * United Civil Group - Enhanced JavaScript
+ * Modern animations, interactivity, and GSAP-powered effects
  */
 
 (function() {
     'use strict';
 
+    // ========================================================================
     // DOM Elements
+    // ========================================================================
     const navbar = document.getElementById('navbar');
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
     const navLinks = document.querySelectorAll('.nav-link');
     const contactForm = document.getElementById('contactForm');
     const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    const scrollProgress = document.getElementById('scrollProgress');
+    const cursor = document.getElementById('cursor');
+    const cursorFollower = document.getElementById('cursorFollower');
 
-    /**
-     * Navigation - Scroll Effect
-     * Adds background to navbar on scroll
-     */
+    // ========================================================================
+    // GSAP & ScrollTrigger Setup
+    // ========================================================================
+    function initGSAP() {
+        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+            console.warn('GSAP not loaded, falling back to CSS animations');
+            return false;
+        }
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Set default ease
+        gsap.defaults({
+            ease: 'power3.out',
+            duration: 1
+        });
+
+        return true;
+    }
+
+    // ========================================================================
+    // Scroll Progress Indicator
+    // ========================================================================
+    function updateScrollProgress() {
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrolled = (window.scrollY / scrollHeight) * 100;
+        if (scrollProgress) {
+            scrollProgress.style.width = `${scrolled}%`;
+        }
+    }
+
+    // ========================================================================
+    // Custom Cursor
+    // ========================================================================
+    function initCustomCursor() {
+        if (!cursor || !cursorFollower) return;
+
+        // Check for touch device
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            cursor.style.display = 'none';
+            cursorFollower.style.display = 'none';
+            return;
+        }
+
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Smooth cursor animation
+        function animateCursor() {
+            // Cursor follows immediately
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            cursor.style.left = `${cursorX}px`;
+            cursor.style.top = `${cursorY}px`;
+
+            // Follower lags behind
+            followerX += (mouseX - followerX) * 0.1;
+            followerY += (mouseY - followerY) * 0.1;
+            cursorFollower.style.left = `${followerX}px`;
+            cursorFollower.style.top = `${followerY}px`;
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover effects on interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, .service-card, .equipment-card, .about-card, .safety-card');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+                cursorFollower.classList.add('hover');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+                cursorFollower.classList.remove('hover');
+            });
+        });
+
+        // Click effect
+        document.addEventListener('mousedown', () => {
+            cursorFollower.classList.add('clicking');
+        });
+        document.addEventListener('mouseup', () => {
+            cursorFollower.classList.remove('clicking');
+        });
+    }
+
+    // ========================================================================
+    // Magnetic Button Effect
+    // ========================================================================
+    function initMagneticButtons() {
+        const magneticElements = document.querySelectorAll('.magnetic');
+
+        magneticElements.forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                const strength = 0.3;
+                el.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+            });
+
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'translate(0, 0)';
+            });
+        });
+    }
+
+    // ========================================================================
+    // Button Ripple Effect
+    // ========================================================================
+    function initRippleEffect() {
+        const buttons = document.querySelectorAll('.btn');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const ripple = document.createElement('span');
+                ripple.className = 'btn-ripple';
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                ripple.style.width = ripple.style.height = `${Math.max(rect.width, rect.height)}px`;
+
+                btn.appendChild(ripple);
+
+                ripple.addEventListener('animationend', () => {
+                    ripple.remove();
+                });
+            });
+        });
+    }
+
+    // ========================================================================
+    // 3D Card Tilt Effect
+    // ========================================================================
+    function initTiltCards() {
+        const cards = document.querySelectorAll('.service-card, .equipment-card, .about-card, .safety-card, .feature-card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = (y - centerY) / 12;
+                const rotateY = (centerX - x) / 12;
+
+                this.style.transform = `perspective(1000px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+    }
+
+    // ========================================================================
+    // Enhanced Counter Animation
+    // ========================================================================
+    function animateCounters() {
+        const counters = document.querySelectorAll('[data-count]');
+
+        counters.forEach(counter => {
+            const target = parseInt(counter.dataset.count);
+            const suffix = counter.dataset.suffix || '';
+            const duration = 2000;
+            let startTime = null;
+            let hasAnimated = false;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasAnimated) {
+                        hasAnimated = true;
+
+                        function animate(currentTime) {
+                            if (!startTime) startTime = currentTime;
+                            const progress = Math.min((currentTime - startTime) / duration, 1);
+
+                            // Easing function for smooth animation
+                            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                            const current = Math.floor(easeOutQuart * target);
+
+                            counter.textContent = current + suffix;
+
+                            if (progress < 1) {
+                                requestAnimationFrame(animate);
+                            } else {
+                                counter.textContent = target + suffix;
+                            }
+                        }
+
+                        requestAnimationFrame(animate);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(counter);
+        });
+
+        // Also animate feature-number elements without data attributes (legacy support)
+        const legacyCounters = document.querySelectorAll('.feature-number:not([data-count])');
+        legacyCounters.forEach(counter => {
+            const text = counter.innerText;
+            const target = parseInt(text.replace(/\D/g, ''));
+            const suffix = text.replace(/[0-9]/g, '');
+
+            if (isNaN(target)) return;
+
+            let hasAnimated = false;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasAnimated) {
+                        hasAnimated = true;
+                        let current = 0;
+                        const increment = target / 50;
+                        const stepTime = 30;
+
+                        const updateCounter = () => {
+                            current += increment;
+                            if (current < target) {
+                                counter.innerText = Math.floor(current) + suffix;
+                                setTimeout(updateCounter, stepTime);
+                            } else {
+                                counter.innerText = target + suffix;
+                            }
+                        };
+
+                        updateCounter();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(counter);
+        });
+    }
+
+    // ========================================================================
+    // GSAP Scroll Animations (Safe - no opacity changes that hide content)
+    // ========================================================================
+    function initGSAPAnimations() {
+        if (!initGSAP()) return;
+
+        // Hero section parallax only (no opacity changes)
+        const hero = document.querySelector('.hero');
+        const heroContent = document.querySelector('.hero-content');
+        const heroBg = document.querySelector('.hero-bg');
+
+        if (hero && heroBg) {
+            gsap.to(heroBg, {
+                y: 80,
+                scrollTrigger: {
+                    trigger: hero,
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1.5
+                }
+            });
+        }
+
+        // Equipment icons gentle float animation
+        const equipmentIcons = document.querySelectorAll('.equipment-icon');
+        equipmentIcons.forEach((icon, index) => {
+            gsap.to(icon, {
+                y: -6,
+                duration: 2.5 + (index * 0.2),
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+                delay: index * 0.15
+            });
+        });
+    }
+
+    // ========================================================================
+    // Navigation - Scroll Effect
+    // ========================================================================
     function handleNavScroll() {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
@@ -26,30 +318,24 @@
         }
     }
 
-    /**
-     * Navigation - Mobile Toggle
-     * Handles mobile menu open/close
-     */
+    // ========================================================================
+    // Navigation - Mobile Toggle
+    // ========================================================================
     function toggleMobileNav() {
         navToggle.classList.toggle('active');
         navMenu.classList.toggle('active');
         document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
     }
 
-    /**
-     * Navigation - Close on Link Click
-     * Closes mobile menu when a link is clicked
-     */
     function closeMobileNavOnClick() {
         navToggle.classList.remove('active');
         navMenu.classList.remove('active');
         document.body.style.overflow = '';
     }
 
-    /**
-     * Smooth Scroll
-     * Handles smooth scrolling for anchor links
-     */
+    // ========================================================================
+    // Smooth Scroll
+    // ========================================================================
     function smoothScroll(e) {
         e.preventDefault();
         const targetId = this.getAttribute('href');
@@ -65,66 +351,48 @@
                 behavior: 'smooth'
             });
 
-            // Close mobile nav if open
             closeMobileNavOnClick();
         }
     }
 
-    /**
-     * Scroll Animations
-     * Intersection Observer for scroll-triggered animations
-     */
+    // ========================================================================
+    // Scroll Animations (subtle - content always visible)
+    // ========================================================================
     function initScrollAnimations() {
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px 0px -100px 0px',
-            threshold: 0.1
-        };
-
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    // Add staggered delay based on element position
-                    const delay = index * 100;
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, delay);
-
-                    // Optionally unobserve after animation
-                    // observer.unobserve(entry.target);
+                    entry.target.classList.add('in-view');
+                    observer.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.2 });
 
         animatedElements.forEach(element => {
             observer.observe(element);
         });
     }
 
-    /**
-     * Contact Form Handling
-     * Sends form data to Cloudflare Worker which emails via SMTP2GO
-     */
+    // ========================================================================
+    // Contact Form Handling
+    // ========================================================================
     async function handleFormSubmit(e) {
         e.preventDefault();
 
         const formData = new FormData(contactForm);
         const data = Object.fromEntries(formData.entries());
 
-        // Basic validation
         if (!data.name || !data.email || !data.message) {
             showNotification('Please fill in all required fields.', 'error');
             return;
         }
 
-        // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(data.email)) {
             showNotification('Please enter a valid email address.', 'error');
             return;
         }
 
-        // Get Turnstile token
         const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
         if (!turnstileToken) {
             showNotification('Please complete the verification check.', 'error');
@@ -135,7 +403,7 @@
         const submitBtn = contactForm.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
 
-        submitBtn.innerHTML = '<span>Sending...</span>';
+        submitBtn.classList.add('loading');
         submitBtn.disabled = true;
 
         try {
@@ -152,7 +420,26 @@
             if (result.success) {
                 showNotification('Thank you! Your message has been sent. We\'ll be in touch soon.', 'success');
                 contactForm.reset();
-                // Reset Turnstile widget
+
+                // Track conversion in Google Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'generate_lead', {
+                        'event_category': 'Contact',
+                        'event_label': 'Contact Form Submission',
+                        'value': 1
+                    });
+                }
+
+                // Success celebration animation
+                if (typeof gsap !== 'undefined') {
+                    gsap.to(submitBtn, {
+                        scale: 1.1,
+                        duration: 0.2,
+                        yoyo: true,
+                        repeat: 1
+                    });
+                }
+
                 if (window.turnstile) {
                     turnstile.reset();
                 }
@@ -163,27 +450,24 @@
             console.error('Form submission error:', error);
             showNotification('Sorry, there was a problem sending your message. Please try again.', 'error');
         } finally {
+            submitBtn.classList.remove('loading');
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-            // Reset Turnstile on any completion
             if (window.turnstile) {
                 turnstile.reset();
             }
         }
     }
 
-    /**
-     * Notification System
-     * Shows temporary notification messages
-     */
+    // ========================================================================
+    // Notification System
+    // ========================================================================
     function showNotification(message, type = 'success') {
-        // Remove existing notification if any
         const existingNotification = document.querySelector('.notification');
         if (existingNotification) {
             existingNotification.remove();
         }
 
-        // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.innerHTML = `
@@ -203,7 +487,6 @@
             </button>
         `;
 
-        // Add styles if not already present
         if (!document.getElementById('notification-styles')) {
             const styles = document.createElement('style');
             styles.id = 'notification-styles';
@@ -223,12 +506,8 @@
                     animation: slideIn 0.3s ease;
                     max-width: 400px;
                 }
-                .notification-success {
-                    border-left: 4px solid #10b981;
-                }
-                .notification-error {
-                    border-left: 4px solid #ef4444;
-                }
+                .notification-success { border-left: 4px solid #10b981; }
+                .notification-error { border-left: 4px solid #ef4444; }
                 .notification-content {
                     display: flex;
                     align-items: center;
@@ -239,12 +518,8 @@
                     height: 24px;
                     flex-shrink: 0;
                 }
-                .notification-success .notification-icon {
-                    color: #10b981;
-                }
-                .notification-error .notification-icon {
-                    color: #ef4444;
-                }
+                .notification-success .notification-icon { color: #10b981; }
+                .notification-error .notification-icon { color: #ef4444; }
                 .notification span {
                     font-size: 14px;
                     color: #374151;
@@ -257,9 +532,7 @@
                     color: #9ca3af;
                     transition: color 0.2s;
                 }
-                .notification-close:hover {
-                    color: #374151;
-                }
+                .notification-close:hover { color: #374151; }
                 .notification-close svg {
                     width: 20px;
                     height: 20px;
@@ -288,19 +561,36 @@
 
         document.body.appendChild(notification);
 
-        // Auto-remove after 5 seconds
+        // Animate in with GSAP if available
+        if (typeof gsap !== 'undefined') {
+            gsap.from(notification, {
+                x: 100,
+                opacity: 0,
+                duration: 0.4,
+                ease: 'back.out(1.7)'
+            });
+        }
+
         setTimeout(() => {
             if (notification.parentElement) {
-                notification.style.animation = 'slideIn 0.3s ease reverse';
-                setTimeout(() => notification.remove(), 300);
+                if (typeof gsap !== 'undefined') {
+                    gsap.to(notification, {
+                        x: 100,
+                        opacity: 0,
+                        duration: 0.3,
+                        onComplete: () => notification.remove()
+                    });
+                } else {
+                    notification.style.animation = 'slideIn 0.3s ease reverse';
+                    setTimeout(() => notification.remove(), 300);
+                }
             }
         }, 5000);
     }
 
-    /**
-     * Active Navigation Highlight
-     * Highlights current section in navigation
-     */
+    // ========================================================================
+    // Active Navigation Highlight
+    // ========================================================================
     function highlightActiveNav() {
         const sections = document.querySelectorAll('section[id]');
         const scrollPosition = window.scrollY + 100;
@@ -321,73 +611,91 @@
         });
     }
 
-    /**
-     * Counter Animation
-     * Animates numbers counting up
-     */
-    function animateCounters() {
-        const counters = document.querySelectorAll('.feature-number');
+    // ========================================================================
+    // Smooth Section Reveal on Scroll
+    // ========================================================================
+    function initSectionReveals() {
+        const sections = document.querySelectorAll('.section');
 
-        counters.forEach(counter => {
-            const target = parseInt(counter.innerText.replace(/\D/g, ''));
-            const suffix = counter.innerText.replace(/[0-9]/g, '');
-            let current = 0;
-            const increment = target / 50;
-            const duration = 1500;
-            const stepTime = duration / 50;
-
-            const updateCounter = () => {
-                current += increment;
-                if (current < target) {
-                    counter.innerText = Math.floor(current) + suffix;
-                    setTimeout(updateCounter, stepTime);
-                } else {
-                    counter.innerText = target + suffix;
-                }
-            };
-
-            // Start animation when element is in view
+        sections.forEach(section => {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        updateCounter();
+                        entry.target.classList.add('revealed');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            observer.observe(section);
+        });
+    }
+
+    // ========================================================================
+    // Image Lazy Loading with Reveal
+    // ========================================================================
+    function initImageReveals() {
+        const images = document.querySelectorAll('.image-reveal');
+
+        images.forEach(image => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            observer.observe(image);
+        });
+    }
+
+    // ========================================================================
+    // Text Reveal Animation
+    // ========================================================================
+    function initTextReveals() {
+        const textElements = document.querySelectorAll('.text-reveal');
+
+        textElements.forEach(el => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const lines = entry.target.querySelectorAll('.text-reveal-line');
+                        lines.forEach((line, index) => {
+                            setTimeout(() => {
+                                line.classList.add('revealed');
+                            }, index * 100);
+                        });
                         observer.unobserve(entry.target);
                     }
                 });
             }, { threshold: 0.5 });
 
-            observer.observe(counter);
+            observer.observe(el);
         });
     }
 
-    /**
-     * Parallax Effect
-     * Subtle parallax on hero section
-     */
-    function initParallax() {
-        const hero = document.querySelector('.hero');
-        const heroContent = document.querySelector('.hero-content');
-
-        if (hero && heroContent) {
-            window.addEventListener('scroll', () => {
-                const scrolled = window.scrollY;
-                const rate = scrolled * 0.3;
-
-                if (scrolled < hero.offsetHeight) {
-                    heroContent.style.transform = `translateY(${rate}px)`;
-                    heroContent.style.opacity = 1 - (scrolled / hero.offsetHeight);
-                }
-            });
+    // ========================================================================
+    // Preloader (Optional - for heavier sites)
+    // ========================================================================
+    function hidePreloader() {
+        const preloader = document.querySelector('.preloader');
+        if (preloader) {
+            preloader.classList.add('hidden');
+            setTimeout(() => preloader.remove(), 500);
         }
     }
 
-    /**
-     * Initialize All Functions
-     */
+    // ========================================================================
+    // Initialize All Functions
+    // ========================================================================
     function init() {
         // Event Listeners
-        window.addEventListener('scroll', handleNavScroll);
-        window.addEventListener('scroll', highlightActiveNav);
+        window.addEventListener('scroll', () => {
+            handleNavScroll();
+            highlightActiveNav();
+            updateScrollProgress();
+        }, { passive: true });
 
         if (navToggle) {
             navToggle.addEventListener('click', toggleMobileNav);
@@ -403,10 +711,18 @@
             contactForm.addEventListener('submit', handleFormSubmit);
         }
 
-        // Initialize animations
+        // Initialize enhanced animations
         initScrollAnimations();
+        initCustomCursor();
+        initMagneticButtons();
+        initRippleEffect();
+        initTiltCards();
         animateCounters();
-        initParallax();
+
+        // Initialize GSAP animations last (after DOM is ready)
+        setTimeout(() => {
+            initGSAPAnimations();
+        }, 100);
 
         // Initialize Lucide icons
         if (window.lucide) {
@@ -416,6 +732,10 @@
         // Initial calls
         handleNavScroll();
         highlightActiveNav();
+        updateScrollProgress();
+
+        // Hide preloader if exists
+        hidePreloader();
 
         // Handle ESC key for mobile menu
         document.addEventListener('keydown', (e) => {
@@ -423,6 +743,19 @@
                 closeMobileNavOnClick();
             }
         });
+
+        // Recalculate on resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (typeof ScrollTrigger !== 'undefined') {
+                    ScrollTrigger.refresh();
+                }
+            }, 200);
+        });
+
+        console.log('United Civil Group - Enhanced animations loaded');
     }
 
     // Run initialization when DOM is ready

@@ -589,8 +589,8 @@ ul {
 }
 
 .about-card:hover {
-    transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
+    /* transform handled by JS tilt effect */
 }
 
 .about-card-icon {
@@ -706,8 +706,8 @@ ul {
 
 .service-card:hover {
     border-color: var(--color-primary-100);
-    transform: translateY(-4px);
     box-shadow: var(--shadow-xl);
+    /* transform handled by JS tilt effect */
 }
 
 .service-card:hover .service-card-bg {
@@ -811,9 +811,9 @@ ul {
 }
 
 .equipment-card:hover {
-    transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-color: var(--color-primary-100);
+    /* transform handled by JS tilt effect */
 }
 
 .equipment-icon {
@@ -899,8 +899,8 @@ ul {
 }
 
 .safety-card:hover {
-    transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
+    /* transform handled by JS tilt effect */
 }
 
 .safety-card-header {
@@ -1244,16 +1244,237 @@ a.contact-value:hover {
     }
 }
 
-/* Scroll Animations */
+/* Scroll Animations - subtle pop on scroll, no transform interference */
 .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    opacity: 1;
 }
 
-.animate-on-scroll.visible {
-    opacity: 1;
-    transform: translateY(0);
+.animate-on-scroll.in-view {
+    animation: subtlePop 0.4s ease;
+}
+
+@keyframes subtlePop {
+    0% { opacity: 0.9; }
+    100% { opacity: 1; }
+}
+
+/* ==========================================================================
+   ENHANCED ANIMATIONS - Modern Interactive Effects
+   ========================================================================== */
+
+/* Scroll Progress Indicator */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    z-index: 9999;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 10px var(--color-primary), 0 0 5px var(--color-primary);
+}
+
+/* Custom Cursor */
+.cursor {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    mix-blend-mode: difference;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    transform: translate(-50%, -50%);
+}
+
+.cursor-follower {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    opacity: 0.5;
+    transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
+    transform: translate(-50%, -50%);
+}
+
+.cursor.hover {
+    transform: translate(-50%, -50%) scale(2);
+    background: var(--color-white);
+}
+
+.cursor-follower.hover {
+    width: 60px;
+    height: 60px;
+    opacity: 0.3;
+}
+
+.cursor-follower.clicking {
+    transform: translate(-50%, -50%) scale(0.8);
+}
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .cursor,
+    .cursor-follower {
+        display: none !important;
+    }
+}
+
+/* Button Ripple Effect */
+.btn-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    animation: ripple 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Magnetic Button Effect */
+.magnetic {
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 3D Card Tilt Effect - Override slow transitions */
+.service-card,
+.equipment-card,
+.about-card,
+.safety-card,
+.feature-card {
+    transition: box-shadow 0.3s ease !important;
+}
+
+.service-card:hover,
+.equipment-card:hover,
+.about-card:hover,
+.safety-card:hover,
+.feature-card:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Glow Effect - Disabled to prevent layout issues */
+/* Use box-shadow instead for glow effect */
+
+/* Form enhancements - focus states handled by existing styles */
+
+/* GSAP handles section and content animations */
+
+/* Counter Animation - no pseudo-element to prevent layout issues */
+
+/* Scroll arrow uses existing bounce animation */
+
+/* Loading states handled by JS */
+
+/* Button hover uses existing transform effects */
+
+/* Icon hover animations */
+
+/* Service Icon Rotation on Hover */
+.service-card:hover .service-icon {
+    animation: iconBounce 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Equipment Icon Float */
+.equipment-card:hover .equipment-icon {
+    animation: iconFloat 0.6s ease-in-out;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Safety Icon Pulse */
+.safety-card:hover .safety-icon {
+    animation: iconPulse 0.5s ease;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* List items use default visibility */
+
+/* Contact Item Hover Effect */
+.contact-item {
+    transition: transform 0.3s ease;
+}
+
+.contact-item:hover {
+    transform: translateX(10px);
+}
+
+.contact-item:hover .contact-icon {
+    animation: iconPulse 0.5s ease;
+    background: var(--color-primary);
+}
+
+.contact-item:hover .contact-icon svg {
+    color: var(--color-white);
+}
+
+/* Footer Link Hover Effect */
+.footer-column a {
+    position: relative;
+    display: inline-block;
+}
+
+.footer-column a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--color-primary);
+    transition: width 0.3s ease;
+}
+
+.footer-column a:hover::after {
+    width: 100%;
+}
+
+/* Loading State for Form Button */
+.btn.loading {
+    pointer-events: none;
+    position: relative;
+}
+
+.btn.loading span:not(.btn-ripple) {
+    opacity: 0;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 /* Responsive Design
