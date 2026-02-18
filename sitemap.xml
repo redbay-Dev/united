@@ -2,38 +2,56 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://unitedcivil.com.au/</loc>
-    <lastmod>2024-12-05</lastmod>
+    <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://unitedcivil.com.au/#about</loc>
-    <lastmod>2024-12-05</lastmod>
+    <loc>https://unitedcivil.com.au/about.html</loc>
+    <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://unitedcivil.com.au/#services</loc>
-    <lastmod>2024-12-05</lastmod>
+    <loc>https://unitedcivil.com.au/services.html</loc>
+    <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://unitedcivil.com.au/#equipment</loc>
-    <lastmod>2024-12-05</lastmod>
+    <loc>https://unitedcivil.com.au/services/site-remediation.html</loc>
+    <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://unitedcivil.com.au/#safety</loc>
-    <lastmod>2024-12-05</lastmod>
+    <loc>https://unitedcivil.com.au/services/subdivisions.html</loc>
+    <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://unitedcivil.com.au/#contact</loc>
-    <lastmod>2024-12-05</lastmod>
+    <loc>https://unitedcivil.com.au/services/civil-infrastructure.html</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://unitedcivil.com.au/services/bulk-earthworks.html</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://unitedcivil.com.au/contact.html</loc>
+    <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://unitedcivil.com.au/capability-statement.html</loc>
+    <lastmod>2026-02-19</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>

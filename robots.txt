@@ -4,8 +4,9 @@
 User-agent: *
 Allow: /
 
+# Disallow crawling of partials and assets that don't need indexing
+Disallow: /includes/
+Disallow: /cloudflare-worker.js
+
 # Sitemap location
 Sitemap: https://unitedcivil.com.au/sitemap.xml
-
-# Disallow crawling of assets that don't need indexing
-Disallow: /cloudflare-worker.js

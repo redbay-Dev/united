@@ -1,0 +1,38 @@
+<!-- Scroll Progress Indicator -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Custom Cursor (Desktop only) -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- Navigation -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="{{BASE}}/index.html" class="nav-logo">
+            <img src="{{BASE}}/assets/LogoThin.svg" alt="United Civil Group" class="nav-logo-img">
+        </a>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <span class="hamburger"></span>
+        </button>
+
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="{{BASE}}/index.html" class="nav-link">Home</a></li>
+            <li><a href="{{BASE}}/about.html" class="nav-link">About</a></li>
+            <li class="nav-dropdown">
+                <a href="{{BASE}}/services.html" class="nav-link nav-dropdown-trigger">
+                    Services
+                    <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg>
+                </a>
+                <ul class="nav-dropdown-menu">
+                    <li><a href="{{BASE}}/services/site-remediation.html" class="nav-link">Site Remediation</a></li>
+                    <li><a href="{{BASE}}/services/subdivisions.html" class="nav-link">Subdivisions</a></li>
+                    <li><a href="{{BASE}}/services/civil-infrastructure.html" class="nav-link">Civil Infrastructure</a></li>
+                    <li><a href="{{BASE}}/services/bulk-earthworks.html" class="nav-link">Bulk Earthworks</a></li>
+                </ul>
+            </li>
+            <li><a href="{{BASE}}/contact.html" class="nav-link nav-cta-mobile-link">Contact Us</a></li>
+        </ul>
+        <a href="{{BASE}}/contact.html" class="nav-cta-desktop nav-link nav-cta">Contact Us</a>
+    </div>
+</nav>
