@@ -20,14 +20,21 @@ Corporate website for United Civil Group - Civil Contracting Experts with over 3
 
 ```
 united/
-├── index.html              # Main HTML page
+├── index.html, about.html, services.html, contact.html,
+│   capability-statement.html, 404.html   # Pages
+├── services/               # One page per service
+├── includes/
+│   ├── header.html         # Shared header, injected by js/components.js
+│   └── footer.html         # Shared footer, injected by js/components.js
 ├── css/
 │   └── styles.css          # All styles (CSS variables, responsive)
 ├── js/
+│   ├── components.js       # Loads the shared header and footer
 │   └── main.js             # Navigation, animations, form handling
-├── assets/
-│   └── favicon.svg         # Site favicon
-├── cloudflare-worker.js    # Contact form email handler (deploy to CF)
+├── assets/                 # Logos, icons, photos, favicons
+├── cloudflare-worker.js    # Contact form email handler (pasted into Cloudflare, not deployed by a push)
+├── tests/                  # node --test tests/*.test.mjs
+├── sitemap.xml, robots.txt
 └── README.md
 ```
 

@@ -1,0 +1,2 @@
+# Snapshots and screenshots the Playwright MCP writes during screen checks
+.playwright-mcp/
