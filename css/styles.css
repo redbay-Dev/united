@@ -879,6 +879,106 @@ ul {
     color: var(--color-gray-600);
 }
 
+/* Testimonial Section
+   ========================================================================== */
+.testimonial {
+    background: var(--color-white);
+}
+
+.testimonial-card {
+    position: relative;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: var(--spacing-12) var(--spacing-12) var(--spacing-10);
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Large decorative opening quote mark, top right */
+.testimonial-card::before {
+    content: "\201C";
+    position: absolute;
+    top: var(--spacing-2);
+    right: var(--spacing-8);
+    font-size: 8rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-primary-100);
+    pointer-events: none;
+}
+
+.testimonial-stars {
+    display: flex;
+    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-4);
+    color: var(--color-primary);
+}
+
+.testimonial-stars svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.testimonial-title {
+    position: relative;
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-6);
+}
+
+.testimonial-quote {
+    position: relative;
+    font-size: var(--font-size-lg);
+    line-height: 1.75;
+    color: var(--color-gray-700);
+}
+
+.testimonial-author {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    margin-top: var(--spacing-8);
+    padding-top: var(--spacing-6);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.testimonial-name {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-gray-900);
+}
+
+.testimonial-business {
+    font-weight: 600;
+    color: var(--color-primary-dark);
+}
+
+.testimonial-location {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+@media (max-width: 768px) {
+    .testimonial-card {
+        padding: var(--spacing-8) var(--spacing-6);
+    }
+
+    .testimonial-card::before {
+        font-size: 5rem;
+        right: var(--spacing-4);
+    }
+
+    .testimonial-title {
+        font-size: var(--font-size-xl);
+    }
+
+    .testimonial-quote {
+        font-size: var(--font-size-base);
+    }
+}
+
 /* Safety Section
    ========================================================================== */
 .safety {
