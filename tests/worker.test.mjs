@@ -11,24 +11,29 @@ const WWW = "https://www.unitedcivil.com.au";
 const ENQUIRY = { name: "Sam", email: "sam@example.com", message: "Quote for a pad", turnstileToken: "token" };
 
 let emails;
+let turnstileChecks;
 let turnstilePasses;
 
 beforeEach(() => {
   emails = [];
+  turnstileChecks = [];
   turnstilePasses = true;
   globalThis.fetch = async (url, init) => {
-    if (String(url).includes("turnstile")) return Response.json({ success: turnstilePasses });
+    if (String(url).includes("turnstile")) {
+      turnstileChecks.push(new URLSearchParams(init.body));
+      return Response.json({ success: turnstilePasses });
+    }
     emails.push(JSON.parse(init.body));
     return Response.json({ data: { succeeded: 1 } });
   };
 });
 
-const post = (origin, body) =>
-  worker.fetch(
-    new Request(SEND, { method: "POST", headers: { Origin: origin, "Content-Type": "application/json" }, body: JSON.stringify(body) }),
-    ENV
-  );
-const preflight = (origin) => worker.fetch(new Request(SEND, { method: "OPTIONS", headers: { Origin: origin } }), ENV);
+// One request to the Worker: method, origin, raw body and URL are all the caller's.
+const call = ({ method = "POST", origin = APEX, body, url = SEND, headers = {} } = {}) =>
+  worker.fetch(new Request(url, { method, headers: { Origin: origin, ...headers }, body }), ENV);
+const post = (origin, enquiry) =>
+  call({ origin, body: JSON.stringify(enquiry), headers: { "Content-Type": "application/json" } });
+const preflight = (origin) => call({ method: "OPTIONS", origin });
 
 for (const origin of [APEX, WWW]) {
   test(`every reply to ${origin} lets that page read it`, async () => {
@@ -53,23 +58,27 @@ test("an enquiry is emailed to info@unitedcivil.net.au, replying to the visitor"
   assert.match(emails[0].text_body, /Quote for a pad/);
 });
 
+test("Turnstile is asked about the visitor's token with the Worker's secret and their IP", async () => {
+  await call({ body: JSON.stringify(ENQUIRY), headers: { "CF-Connecting-IP": "203.0.113.7" } });
+  assert.equal(turnstileChecks.length, 1);
+  assert.equal(turnstileChecks[0].get("secret"), "test-secret");
+  assert.equal(turnstileChecks[0].get("response"), "token");
+  assert.equal(turnstileChecks[0].get("remoteip"), "203.0.113.7");
+});
+
 test("any path other than /send is a 404 and sends nothing", async () => {
   for (const method of ["POST", "GET", "OPTIONS"]) {
-    const res = await worker.fetch(
-      new Request("https://contact.unitedcivil.com.au/api/heartbeat", { method, headers: { Origin: APEX }, body: method === "POST" ? "{}" : undefined }),
-      ENV
-    );
+    const res = await call({ method, url: "https://contact.unitedcivil.com.au/api/heartbeat", body: method === "POST" ? "{}" : undefined });
     assert.equal(res.status, 404, method);
   }
   assert.equal(emails.length, 0);
 });
 
 test("a body that isn't JSON is a 400, not a crash", async () => {
-  const res = await worker.fetch(new Request(SEND, { method: "POST", headers: { Origin: APEX }, body: "not json" }), ENV);
+  const res = await call({ body: "not json" });
   assert.equal(res.status, 400);
   assert.equal(res.headers.get("Access-Control-Allow-Origin"), APEX);
-  const nullBody = await worker.fetch(new Request(SEND, { method: "POST", headers: { Origin: APEX }, body: "null" }), ENV);
-  assert.equal(nullBody.status, 400);
+  assert.equal((await call({ body: "null" })).status, 400);
 });
 
 test("a failed Turnstile check sends no email", async () => {

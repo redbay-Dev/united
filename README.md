@@ -32,7 +32,9 @@ united/
 │   ├── components.js       # Loads the shared header and footer
 │   └── main.js             # Navigation, animations, form handling
 ├── assets/                 # Logos, icons, photos, favicons
-├── cloudflare-worker.js    # Contact form email handler (pasted into Cloudflare, not deployed by a push)
+├── cloudflare-worker.js    # Contact form email handler (a Cloudflare Worker; a push does not deploy it)
+├── wrangler.toml           # The Worker's live settings
+├── scripts/                # deploy-worker.sh, worker-logs.sh (and the token loader they share)
 ├── tests/                  # node --test tests/*.test.mjs
 ├── sitemap.xml, robots.txt
 └── README.md
@@ -79,8 +81,6 @@ The contact form submits to a Cloudflare Worker that sends emails via SMTP2GO.
 |----------|-------------|
 | `SMTP2GO_API_KEY` | SMTP2GO API key (send permission only) |
 | `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile secret key |
-
-They were set as plain-text variables in the dashboard; the first deploy through `scripts/deploy-worker.sh` turns them into encrypted secrets.
 
 **Deploying:** a push to `main` does not deploy the Worker. With a Cloudflare API token ("Edit Cloudflare Workers" template) saved as `CLOUDFLARE_API_TOKEN=…` in `~/.config/united/cloudflare.env`, run `bash scripts/deploy-worker.sh` (or `--dry-run` first). `bash scripts/worker-logs.sh` summarises its last 7 days of logs. Tests: `node --test tests/*.test.mjs`.
 
