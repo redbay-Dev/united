@@ -53,6 +53,25 @@ test("an enquiry is emailed to info@unitedcivil.com.au, replying to the visitor"
   assert.match(emails[0].text_body, /Quote for a pad/);
 });
 
+test("any path other than /send is a 404 and sends nothing", async () => {
+  for (const method of ["POST", "GET", "OPTIONS"]) {
+    const res = await worker.fetch(
+      new Request("https://contact.unitedcivil.com.au/api/heartbeat", { method, headers: { Origin: APEX }, body: method === "POST" ? "{}" : undefined }),
+      ENV
+    );
+    assert.equal(res.status, 404, method);
+  }
+  assert.equal(emails.length, 0);
+});
+
+test("a body that isn't JSON is a 400, not a crash", async () => {
+  const res = await worker.fetch(new Request(SEND, { method: "POST", headers: { Origin: APEX }, body: "not json" }), ENV);
+  assert.equal(res.status, 400);
+  assert.equal(res.headers.get("Access-Control-Allow-Origin"), APEX);
+  const nullBody = await worker.fetch(new Request(SEND, { method: "POST", headers: { Origin: APEX }, body: "null" }), ENV);
+  assert.equal(nullBody.status, 400);
+});
+
 test("a failed Turnstile check sends no email", async () => {
   turnstilePasses = false;
   const res = await post(APEX, ENQUIRY);

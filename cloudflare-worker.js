@@ -23,6 +23,11 @@ function json(request, body, status = 200) {
 
 export default {
   async fetch(request, env) {
+    // The form only ever posts to /send; scanners probe every other path.
+    if (new URL(request.url).pathname !== "/send") {
+      return new Response("Not found", { status: 404, headers: corsHeaders(request) });
+    }
+
     // Handle CORS preflight
     if (request.method === "OPTIONS") {
       return new Response(null, {
@@ -39,9 +44,17 @@ export default {
       return new Response("Method not allowed", { status: 405, headers: corsHeaders(request) });
     }
 
+    let formData;
     try {
-      const formData = await request.json();
+      formData = await request.json();
+    } catch {
+      formData = null;
+    }
+    if (!formData || typeof formData !== "object") {
+      return json(request, { error: "Invalid request" }, 400);
+    }
 
+    try {
       // Validate required fields
       const { name, email, phone, service, message, turnstileToken } = formData;
       if (!name || !email || !message) {
