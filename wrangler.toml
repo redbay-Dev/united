@@ -1,0 +1,25 @@
+# The contact form's Worker: cloudflare-worker.js, deployed as "ucg-contact" on
+# contact.unitedcivil.com.au. A push to main does not deploy it:
+# bash scripts/deploy-worker.sh does. Every setting here matches what was live
+# on 2026-11-10, so a deploy changes only the code (and encrypts the two keys).
+name = "ucg-contact"
+main = "cloudflare-worker.js"
+account_id = "c9ed3ce7b3082947ed3e8e2c978deee3" # "Farrell Transport" account
+compatibility_date = "2025-12-02"
+
+routes = [{ pattern = "contact.unitedcivil.com.au", custom_domain = true }]
+workers_dev = true
+preview_urls = false
+
+# SMTP2GO_API_KEY and TURNSTILE_SECRET_KEY are encrypted secrets, never vars:
+# with keep_vars off, a deploy deletes any plain-text var set in the dashboard.
+keep_vars = false
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+invocation_logs = true

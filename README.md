@@ -71,23 +71,18 @@ united/
 
 The contact form submits to a Cloudflare Worker that sends emails via SMTP2GO.
 
-**Worker URL:** `https://contact.unitedcivil.com.au/send`
+**Worker:** `ucg-contact` in the "Farrell Transport" Cloudflare account, on the custom domain `https://contact.unitedcivil.com.au/send`. Its settings are in `wrangler.toml`.
 
-**Environment Variables:**
+**Keys on the Worker** (never committed):
 
-| Variable | Type | Description |
-|----------|------|-------------|
-| `SMTP2GO_API_KEY` | Secret | SMTP2GO API key (send permission only) |
-| `TURNSTILE_SECRET_KEY` | Secret | Cloudflare Turnstile secret key |
+| Variable | Description |
+|----------|-------------|
+| `SMTP2GO_API_KEY` | SMTP2GO API key (send permission only) |
+| `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile secret key |
 
-**Setup Steps:**
+They were set as plain-text variables in the dashboard; the first deploy through `scripts/deploy-worker.sh` turns them into encrypted secrets.
 
-1. Create Worker in Cloudflare dashboard (Workers & Pages → Create)
-2. Paste contents of `cloudflare-worker.js`
-3. Add secrets in Settings → Variables:
-   - `SMTP2GO_API_KEY` - your SMTP2GO API key
-   - `TURNSTILE_SECRET_KEY` - your Turnstile secret key
-4. Add custom domain `contact.unitedcivil.com.au` in Settings → Domains
+**Deploying:** a push to `main` does not deploy the Worker. With a Cloudflare API token ("Edit Cloudflare Workers" template) saved as `CLOUDFLARE_API_TOKEN=…` in `~/.config/united/cloudflare.env`, run `bash scripts/deploy-worker.sh` (or `--dry-run` first). `bash scripts/worker-logs.sh` summarises its last 7 days of logs. Tests: `node --test tests/*.test.mjs`.
 
 ### Cloudflare Turnstile (Bot Protection)
 
