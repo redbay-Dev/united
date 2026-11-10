@@ -43,12 +43,12 @@ test("a foreign origin is never echoed back", async () => {
   assert.equal(res.headers.get("Access-Control-Allow-Origin"), APEX);
 });
 
-test("an enquiry is emailed to info@unitedcivil.com.au, replying to the visitor", async () => {
+test("an enquiry is emailed to info@unitedcivil.net.au, replying to the visitor", async () => {
   const res = await post(WWW, ENQUIRY);
   assert.deepEqual(await res.json(), { success: true });
   assert.equal(emails.length, 1);
-  assert.deepEqual(emails[0].to, ["info@unitedcivil.com.au"]);
-  assert.equal(emails[0].sender, "info@unitedcivil.com.au");
+  assert.deepEqual(emails[0].to, ["info@unitedcivil.net.au"]);
+  assert.equal(emails[0].sender, "info@unitedcivil.net.au");
   assert.deepEqual(emails[0].custom_headers, [{ header: "Reply-To", value: "sam@example.com" }]);
   assert.match(emails[0].text_body, /Quote for a pad/);
 });

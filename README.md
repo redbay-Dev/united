@@ -102,11 +102,11 @@ Turnstile provides invisible bot protection on the contact form.
 
 ### SMTP2GO
 
-- **Sender Domain:** unitedcivil.com.au
-- **From Address:** info@unitedcivil.com.au
+- **Sender Domain:** unitedcivil.net.au (the mailbox is on .net.au, not the site's .com.au)
+- **From Address:** info@unitedcivil.net.au
 - **API Permissions:** Send Emails only
 
-**Required DNS for email authentication:**
+**Required DNS for email authentication** (on the sender domain, unitedcivil.net.au):
 
 | Type | Name | Value |
 |------|------|-------|
@@ -155,7 +155,7 @@ Cloudflare Worker receives request
        ↓
 Worker calls SMTP2GO API
        ↓
-Email sent to info@unitedcivil.com.au
+Email sent to info@unitedcivil.net.au
        ↓
 Success response → User sees confirmation
 ```
