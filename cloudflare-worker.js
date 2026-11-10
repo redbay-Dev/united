@@ -1,13 +1,33 @@
 // Cloudflare Worker for United Civil Group Contact Form
 // Sends emails via SMTP2GO API with Turnstile verification
 
+// The site answers on both the apex and www (no redirect between them), so the
+// form posts from either origin. Every response carries the CORS header, or the
+// browser hides the reply from the page.
+const ALLOWED_ORIGINS = ["https://unitedcivil.com.au", "https://www.unitedcivil.com.au"];
+
+function corsHeaders(request) {
+  const origin = request.headers.get("Origin");
+  return {
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
+    Vary: "Origin",
+  };
+}
+
+function json(request, body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...corsHeaders(request) },
+  });
+}
+
 export default {
   async fetch(request, env) {
     // Handle CORS preflight
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
-          "Access-Control-Allow-Origin": "https://unitedcivil.com.au",
+          ...corsHeaders(request),
           "Access-Control-Allow-Methods": "POST, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
         },
@@ -16,7 +36,7 @@ export default {
 
     // Only allow POST
     if (request.method !== "POST") {
-      return new Response("Method not allowed", { status: 405 });
+      return new Response("Method not allowed", { status: 405, headers: corsHeaders(request) });
     }
 
     try {
@@ -25,21 +45,12 @@ export default {
       // Validate required fields
       const { name, email, phone, service, message, turnstileToken } = formData;
       if (!name || !email || !message) {
-        return new Response(JSON.stringify({ error: "Missing required fields" }), {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        });
+        return json(request, { error: "Missing required fields" }, 400);
       }
 
       // Verify Turnstile token
       if (!turnstileToken) {
-        return new Response(JSON.stringify({ error: "Missing verification token" }), {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://unitedcivil.com.au",
-          },
-        });
+        return json(request, { error: "Missing verification token" }, 400);
       }
 
       const turnstileResponse = await fetch(
@@ -59,13 +70,7 @@ export default {
 
       if (!turnstileResult.success) {
         console.error("Turnstile verification failed:", turnstileResult);
-        return new Response(JSON.stringify({ error: "Verification failed" }), {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://unitedcivil.com.au",
-          },
-        });
+        return json(request, { error: "Verification failed" }, 400);
       }
 
       // Build email content
@@ -105,31 +110,14 @@ ${message}
       const result = await smtp2goResponse.json();
 
       if (result.data?.succeeded > 0) {
-        return new Response(JSON.stringify({ success: true }), {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://unitedcivil.com.au",
-          },
-        });
+        return json(request, { success: true });
       } else {
         console.error("SMTP2GO error:", result);
-        return new Response(JSON.stringify({ error: "Failed to send email" }), {
-          status: 500,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://unitedcivil.com.au",
-          },
-        });
+        return json(request, { error: "Failed to send email" }, 500);
       }
     } catch (error) {
       console.error("Worker error:", error);
-      return new Response(JSON.stringify({ error: "Server error" }), {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "https://unitedcivil.com.au",
-        },
-      });
+      return json(request, { error: "Server error" }, 500);
     }
   },
 };
