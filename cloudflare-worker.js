@@ -94,8 +94,8 @@ ${message}
         },
         body: JSON.stringify({
           api_key: env.SMTP2GO_API_KEY,
-          to: ["info@unitedcivil.net.au"],
-          sender: "info@unitedcivil.net.au",
+          to: ["info@unitedcivil.com.au"],
+          sender: "info@unitedcivil.com.au",
           subject: `Website Enquiry from ${name}`,
           text_body: emailBody,
           custom_headers: [
