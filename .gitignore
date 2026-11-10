@@ -1,2 +1,6 @@
 # Snapshots and screenshots the Playwright MCP writes during screen checks
 .playwright-mcp/
+
+# Credentials: the repo is public. Keep tokens in ~/.config/united/, never here.
+*.env
+.env*
